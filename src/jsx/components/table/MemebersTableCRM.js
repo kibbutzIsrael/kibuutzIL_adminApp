@@ -1,59 +1,14 @@
 import React, { Fragment, useEffect, useState } from "react";
 import PageTitle from "../../layouts/PageTitle";
-import {
-   Row,
-   Col,
-   Card,
-   Table,
-   Badge,
-   Dropdown,
-   ProgressBar,
-   Button,
-   Modal,
-} from "react-bootstrap";
+import { Row, Col, Card, Table, Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import { useFormik } from "formik";
 
 const MembersTableCRM = () => {
    const [users, setUsers] = useState([]);
    const [basicModal, setBasicModal] = useState(false);
-   const [modalContent, setModalContent] = useState({
-      firstName: "",
-      lastName: "",
-      email: "",
-      role: "",
-      location: "",
-      phoneNumber: "",
-      gender: "",
-      positionAntilNow: "",
-      fecerPosition: "",
-      yearExperience: "",
-      linkdinURL: "",
-   });
 
    const API_URI = "https://65a8294194c2c5762da86419.mockapi.io/users";
-
-   const chackbox = document.querySelectorAll(".bs_exam_topper input");
-   const motherChackBox = document.querySelector(".bs_exam_topper_all input");
-   const chackboxFun = (type) => {
-      for (let i = 0; i < chackbox.length; i++) {
-         const element = chackbox[i];
-         if (type === "all") {
-            if (motherChackBox.checked) {
-               element.checked = true;
-            } else {
-               element.checked = false;
-            }
-         } else {
-            if (!element.checked) {
-               motherChackBox.checked = false;
-               break;
-            } else {
-               motherChackBox.checked = true;
-            }
-         }
-      }
-   };
 
    const {
       firstName,
@@ -84,6 +39,7 @@ const MembersTableCRM = () => {
       linkdinURL: "Linkdin URL",
    };
 
+   //fetch users
    async function fetchUsers() {
       const fetchUsers = fetch(API_URI)
          .then((res) => res.json())
@@ -93,6 +49,7 @@ const MembersTableCRM = () => {
       const allUsers = await fetchUsers;
       setUsers(allUsers);
    }
+
    useEffect(() => {
       fetchUsers();
    }, []);
@@ -102,7 +59,7 @@ const MembersTableCRM = () => {
       if (!user.firstName) return;
       return (
          <tr>
-            <th>{index + 2}</th>
+            <th className="align-middle">{index + 1}</th>
             {/*fullName  */}
             <td className="py-2">{user.firstName + " " + user.lastName}</td>
             {/*email  */}
@@ -116,32 +73,32 @@ const MembersTableCRM = () => {
             {/*gender  */}
             <td className="py-2">{user.gender ? "Male" : "Female"}</td>
             {/*CRM  */}
-            <td className="py-2">
-               <Button
-                  className="me-2 btn-sm"
-                  variant="warning btn-rounded"
-                  onClick={() => {
-                     setModalContent(user);
-                     form.setValues(user);
-                     setBasicModal(true);
-                  }}
-               >
-                  <i className="bi bi-pencil-square fs-5"></i>
-               </Button>
-
-               <Button
-                  onClick={() => {
-                     axios
-                        .delete(
-                           `https://65a8294194c2c5762da86419.mockapi.io/users/${user.id}`
-                        )
-                        .then((res) => fetchUsers());
-                  }}
-                  className="me-2 btn-sm"
-                  variant="primary btn-rounded"
-               >
-                  <i className="bi bi-trash fs-5"></i>
-               </Button>
+            <td className="py-2 ">
+               <div class="d-flex">
+                  <Button
+                     className="me-2 btn-sm"
+                     variant="warning btn-rounded"
+                     onClick={() => {
+                        form.setValues(user);
+                        setBasicModal(true);
+                     }}
+                  >
+                     <i className="bi bi-pencil-square fs-5"></i>
+                  </Button>
+                  <Button
+                     onClick={() => {
+                        axios
+                           .delete(
+                              `https://65a8294194c2c5762da86419.mockapi.io/users/${user.id}`
+                           )
+                           .then((res) => fetchUsers());
+                     }}
+                     className="me-2 btn-sm"
+                     variant="primary btn-rounded"
+                  >
+                     <i className="bi bi-trash fs-5"></i>
+                  </Button>
+               </div>
             </td>
          </tr>
       );
@@ -157,7 +114,7 @@ const MembersTableCRM = () => {
          role: "",
          location: "",
          phoneNumber: "",
-         gender: false,
+         gender: true,
          positionAntilNow: "",
          fecerPosition: "",
          yearExperience: "",
@@ -165,19 +122,31 @@ const MembersTableCRM = () => {
       },
 
       async onSubmit(values) {
-         await axios.put(`${API_URI}/${modalContent.id}`, values);
+         if (form.values.id) {
+            await axios.put(`${API_URI}/${form.values.id}`, values);
+         } else {
+            await axios.post(`${API_URI}`, values);
+         }
+
          fetchUsers();
       },
    });
 
    return (
       <Fragment>
-         <PageTitle activeMenu="Member table CRM" motherMenu="Tables" />
+         <PageTitle activeMenu="Members table CRM" motherMenu="Tables" />
          <Row>
             <Col lg={12}>
                <Card>
                   <Card.Header>
                      <Card.Title>Members</Card.Title>
+                     <Button
+                        className="me-2"
+                        variant="outline-primary"
+                        onClick={() => setBasicModal(true)}
+                     >
+                        + Add new member
+                     </Button>
                   </Card.Header>
                   <Card.Body>
                      <Table responsive hover>
@@ -194,9 +163,15 @@ const MembersTableCRM = () => {
                            </tr>
                         </thead>
                         <tbody>
-                           {users.map((user, index) => (
-                              <MemberTr key={index} user={user} index={index} />
-                           ))}
+                           {users
+                              .map((user, index) => (
+                                 <MemberTr
+                                    key={index}
+                                    user={user}
+                                    index={index}
+                                 />
+                              ))
+                              .sort()}
                         </tbody>
                      </Table>
                   </Card.Body>
@@ -217,7 +192,10 @@ const MembersTableCRM = () => {
                <Button
                   variant=""
                   className="btn-close"
-                  onClick={() => setBasicModal(false)}
+                  onClick={() => {
+                     setBasicModal(false);
+                     form.resetForm();
+                  }}
                ></Button>
             </Modal.Header>
             <Modal.Body>
@@ -310,26 +288,32 @@ const MembersTableCRM = () => {
                               <div className="form-check">
                                  <input
                                     {...form.getFieldProps("gender")}
+                                    id="maleRadio"
                                     className="form-check-input"
                                     type="radio"
-                                    name="gridRadios"
-                                    value="option1"
-                                    checked={modalContent.gender}
+                                    value={true}
+                                    defaultChecked={form.values.gender}
                                  />
-                                 <label className="form-check-label">
+                                 <label
+                                    htmlFor="maleRadio"
+                                    className="form-check-label"
+                                 >
                                     Male
                                  </label>
                               </div>
                               <div className="form-check">
                                  <input
+                                    id="femaleRadio"
                                     {...form.getFieldProps("gender")}
                                     className="form-check-input"
                                     type="radio"
-                                    name="gridRadios"
-                                    value="option2"
-                                    checked={!modalContent.gender}
+                                    value={false}
+                                    defaultChecked={!form.values.gender}
                                  />
-                                 <label className="form-check-label">
+                                 <label
+                                    htmlFor="femaleRadio"
+                                    className="form-check-label"
+                                 >
                                     Female
                                  </label>
                               </div>
@@ -396,7 +380,10 @@ const MembersTableCRM = () => {
             </Modal.Body>
             <Modal.Footer>
                <Button
-                  onClick={() => setBasicModal(false)}
+                  onClick={() => {
+                     setBasicModal(false);
+                     form.resetForm();
+                  }}
                   variant="danger light"
                >
                   Close
@@ -408,7 +395,7 @@ const MembersTableCRM = () => {
                   }}
                   variant="primary"
                >
-                  Save changes
+                  {form.values.id ? "Edit member" : "Add member"}
                </Button>
             </Modal.Footer>
          </Modal>
