@@ -198,7 +198,7 @@ const MembersTableCRM = () => {
 
                      <Input
                         label={fields.firstName}
-                        domName="lastName"
+                        domName="firstName"
                         error={form.touched.firstName && form.errors.firstName}
                         required
                         {...form.getFieldProps("firstName")}
