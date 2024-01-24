@@ -3,6 +3,7 @@ import { fields } from "./tableFields";
 
 function emptyStringToUndefined(string) {
    if (string === "") return undefined;
+   return string;
 }
 
 function YupUserSchema() {
@@ -28,7 +29,6 @@ function YupUserSchema() {
          gender: yup
             .string()
             .transform(emptyStringToUndefined)
-            .oneOf(["Male", "Female"])
             .label(fields.gender),
          positionAntilNow: yup
             .string()
