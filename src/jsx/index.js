@@ -110,6 +110,7 @@ import Error503 from "./pages/Error503";
 import Setting from "./layouts/Setting";
 import { ThemeContext } from "../context/ThemeContext";
 import MembersTableCRM from "./components/table/MemebersTableCRM";
+import VolunteersCRM from "./components/table/VolunteersCRM";
 
 const Markup = () => {
    // const { menuToggle } = useContext(ThemeContext);
@@ -205,6 +206,7 @@ const Markup = () => {
       { url: "table-datatable-basic", component: <DataTable /> },
       { url: "table-bootstrap-basic", component: <BootstrapTable /> },
       { url: "members-table-crm", component: <MembersTableCRM /> },
+      { url: "volunteers-crm", component: <VolunteersCRM /> },
 
       /// pages
       //{ url: "page-register", component: Registration },

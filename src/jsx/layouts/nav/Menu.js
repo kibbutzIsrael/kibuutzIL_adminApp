@@ -303,6 +303,10 @@ export const MenuList = [
             title: "Members Table CRM",
             to: "members-table-crm",
          },
+         {
+            title: "Volunteers CRM",
+            to: "volunteers-crm",
+         },
       ],
    },
    //Pages
