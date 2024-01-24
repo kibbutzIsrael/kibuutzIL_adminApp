@@ -17,6 +17,7 @@ const MembersTableCRM = () => {
    const API_URI = "https://65a8294194c2c5762da86419.mockapi.io/users";
 
    useEffect(() => {
+      console.log("Fetch");
       fetchUsers(API_URI)
          .then((allMembers) => setUsers(allMembers))
          .catch(console.log);
@@ -157,13 +158,16 @@ const MembersTableCRM = () => {
                         </thead>
                         <tbody>
                            {users
-                              .map((user, index) => (
-                                 <MemberTr
-                                    key={index}
-                                    user={user}
-                                    index={index}
-                                 />
-                              ))
+                              .map((user, index) => {
+                                 console.log("render");
+                                 return (
+                                    <MemberTr
+                                       key={index}
+                                       user={user}
+                                       index={index}
+                                    />
+                                 );
+                              })
                               .sort()}
                         </tbody>
                      </Table>
