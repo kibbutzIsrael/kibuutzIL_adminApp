@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 
 import { Link } from "react-router-dom";
 /// Scroll
@@ -8,10 +8,10 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import profile from "../../../images/user.jpg";
 import avatar from "../../../images/avatar/1.jpg";
 import { Dropdown } from "react-bootstrap";
-import LogoutPage from './Logout';
+import LogoutPage from "./Logout";
 
 const Header = ({ onNote }) => {
-  const [searchBut, setSearchBut] = useState(false);	
+  const [searchBut, setSearchBut] = useState(false);
   var path = window.location.pathname.split("/");
   var name = path[path.length - 1].split("-");
   var filterName = name.length >= 3 ? name.filter((n, i) => i > 0) : name;
@@ -38,24 +38,24 @@ const Header = ({ onNote }) => {
     : filterName.includes("editor")
     ? filterName.filter((f) => f !== "editor")
     : filterName;
-  return ( 
+  return (
     <div className="header border-bottom">
       <div className="header-content">
         <nav className="navbar navbar-expand">
           <div className="collapse navbar-collapse justify-content-between">
             <div className="header-left">
-				<div
-					className="dashboard_bar"
-					style={{ textTransform: "capitalize" }}
-				  >
-					{finalName.join(" ").length === 0
-					  ? "Dashboard"
-					  : finalName.join(" ") === "dashboard dark"
-					  ? "Dashboard"
-					  : finalName.join(" ")}
-				</div>
+              <div
+                className="dashboard_bar"
+                style={{ textTransform: "capitalize" }}
+              >
+                {finalName.join(" ").length === 0
+                  ? "Dashboard"
+                  : finalName.join(" ") === "dashboard dark"
+                  ? "Dashboard"
+                  : finalName.join(" ")}
+              </div>
             </div>
-			<div className="nav-item d-flex align-items-center">
+            {/* <div className="nav-item d-flex align-items-center">
 				<div className="input-group search-area">
 					<input type="text" 
 						className={`form-control ${searchBut ? "active" : ""}`}
@@ -65,8 +65,8 @@ const Header = ({ onNote }) => {
 						<Link to={"#"}><i className="flaticon-381-search-2"></i></Link>
 					</span>
 				</div>
-			</div> 
-            <ul className="navbar-nav header-right">
+			</div>  */}
+            {/* <ul className="navbar-nav header-right">
 					
 				<Dropdown
 					as="li"
@@ -348,7 +348,7 @@ const Header = ({ onNote }) => {
 					  <LogoutPage />
 					</Dropdown.Menu>
 				</Dropdown> 				
-            </ul>
+            </ul> */}
           </div>
         </nav>
       </div>
