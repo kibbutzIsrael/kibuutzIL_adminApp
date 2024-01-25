@@ -23,7 +23,7 @@ function YupUserSchema() {
             .label(fields.location),
          phoneNumber: yup
             .string()
-            .matches(/^0\d{8,9}$/)
+            .matches(/^0\d{8,9}$/, "Invalid phone number")
             .required()
             .label(fields.phoneNumber),
          gender: yup
