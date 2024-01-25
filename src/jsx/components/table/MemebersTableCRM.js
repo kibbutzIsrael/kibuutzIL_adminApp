@@ -1,12 +1,16 @@
 import React, { Fragment, useEffect, useState } from "react";
 import PageTitle from "../../layouts/PageTitle";
 import { Row, Col, Card, Table, Button, Modal } from "react-bootstrap";
-import axios from "axios";
 import { useFormik } from "formik";
 
 import { fields } from "../../../lib/tableFields";
 import { Input } from "../creatdComponents/Input";
-import { fetchUsers } from "../../../lib/fetchUsers";
+import {
+   createUser,
+   deleteUser,
+   fetchUsers,
+   updateUser,
+} from "../../../lib/userCRUD";
 import { YupUserSchema } from "../../../lib/YupMemberSchema";
 
 const MembersTableCRM = () => {
@@ -14,14 +18,18 @@ const MembersTableCRM = () => {
    const [basicModal, setBasicModal] = useState(false);
    const [serverError, setServerError] = useState(null);
 
+   useEffect(() => {
+      fetchUsers(API_URI).then(setUsers).catch(console.log);
+   }, []);
+
    const API_URI = "https://65a8294194c2c5762da86419.mockapi.io/users";
 
-   useEffect(() => {
-      console.log("Fetch");
-      fetchUsers(API_URI)
-         .then((allMembers) => setUsers(allMembers))
+   function handleDelete(user) {
+      deleteUser(API_URI, user.id)
+         .then(() => fetchUsers(API_URI))
+         .then(setUsers)
          .catch(console.log);
-   }, []);
+   }
 
    //User table row Component
    const MemberTr = ({ user = {}, index = 1 }) => {
@@ -43,14 +51,13 @@ const MembersTableCRM = () => {
             <td className="py-2">{user.gender ? "Male" : "Female"}</td>
             {/*CRM  */}
             <td className="py-2 ">
-               <div class="d-flex">
+               <div className="d-flex">
                   <Button
                      className="me-2 btn-sm"
                      variant="warning btn-rounded"
                      onClick={() => {
                         form.setValues({
                            user,
-                           gender: user.gender ? "Male" : "Female",
                         });
                         setBasicModal(true);
                      }}
@@ -58,13 +65,7 @@ const MembersTableCRM = () => {
                      <i className="bi bi-pencil-square fs-5"></i>
                   </Button>
                   <Button
-                     onClick={() => {
-                        axios
-                           .delete(
-                              `https://65a8294194c2c5762da86419.mockapi.io/users/${user.id}`
-                           )
-                           .then((res) => fetchUsers());
-                     }}
+                     onClick={() => handleDelete(user)}
                      className="me-2 btn-sm"
                      variant="primary btn-rounded"
                   >
@@ -113,13 +114,13 @@ const MembersTableCRM = () => {
          const processedValues = YupNewMemberSchema().validateSync(values);
          try {
             if (form.values.id) {
-               await axios.put(`${API_URI}/${form.values.id}`, processedValues);
+               await updateUser(API_URI, form.values.id, processedValues);
             } else {
-               await axios.post(`${API_URI}`, processedValues);
+               await createUser(API_URI, processedValues);
             }
 
             form.resetForm();
-            fetchUsers();
+            fetchUsers(API_URI).then(setUsers);
          } catch (error) {
             console.log(error);
          }
@@ -159,7 +160,6 @@ const MembersTableCRM = () => {
                         <tbody>
                            {users
                               .map((user, index) => {
-                                 console.log("render");
                                  return (
                                     <MemberTr
                                        key={index}
@@ -202,7 +202,6 @@ const MembersTableCRM = () => {
 
                      <Input
                         label={fields.firstName}
-                        domName="firstName"
                         error={form.touched.firstName && form.errors.firstName}
                         required
                         {...form.getFieldProps("firstName")}
@@ -212,7 +211,6 @@ const MembersTableCRM = () => {
 
                      <Input
                         label="Last Name"
-                        domName="lastName"
                         error={form.touched.lastName && form.errors.lastName}
                         required
                         {...form.getFieldProps("lastName")}
@@ -221,7 +219,6 @@ const MembersTableCRM = () => {
                      {/* email */}
                      <Input
                         label="Email"
-                        domName="email"
                         error={form.touched.email && form.errors.email}
                         type="email"
                         required
@@ -230,7 +227,6 @@ const MembersTableCRM = () => {
                      {/* phoneNumber */}
                      <Input
                         label="Phone"
-                        domName="phoneNumber"
                         error={
                            form.touched.phoneNumber && form.errors.phoneNumber
                         }
@@ -241,7 +237,6 @@ const MembersTableCRM = () => {
                      {/* role */}
                      <Input
                         label="Role"
-                        domName="role"
                         error={form.touched.role && form.errors.role}
                         {...form.getFieldProps("role")}
                      />
@@ -249,7 +244,6 @@ const MembersTableCRM = () => {
                      {/* location */}
                      <Input
                         label="Location"
-                        domName="location"
                         error={form.touched.location && form.errors.location}
                         {...form.getFieldProps("location")}
                      />
@@ -277,7 +271,6 @@ const MembersTableCRM = () => {
                      {/* positionAntilNow */}
                      <Input
                         label="positionAntilNow"
-                        domName="positionAntilNow"
                         error={
                            form.touched.positionAntilNow &&
                            form.errors.positionAntilNow
@@ -288,7 +281,6 @@ const MembersTableCRM = () => {
                      {/* fecerPosition */}
                      <Input
                         label="fecerPosition"
-                        domName="fecerPosition"
                         error={
                            form.touched.fecerPosition &&
                            form.errors.fecerPosition
@@ -299,7 +291,6 @@ const MembersTableCRM = () => {
                      {/* yearExperience */}
                      <Input
                         label="yearExperience"
-                        domName="yearExperience"
                         error={
                            form.touched.yearExperience &&
                            form.errors.yearExperience
@@ -310,7 +301,6 @@ const MembersTableCRM = () => {
                      {/* linkdinURL */}
                      <Input
                         label="linkdinURL"
-                        domName="linkdinURL"
                         error={
                            form.touched.linkdinURL && form.errors.linkdinURL
                         }

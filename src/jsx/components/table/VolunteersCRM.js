@@ -6,7 +6,12 @@ import { useFormik } from "formik";
 
 import { fields } from "../../../lib/tableFields";
 import { Input } from "../creatdComponents/Input";
-import { fetchUsers } from "../../../lib/fetchUsers";
+import {
+   createUser,
+   deleteUser,
+   fetchUsers,
+   updateUser,
+} from "../../../lib/userCRUD";
 import { YupUserSchema } from "../../../lib/YupMemberSchema";
 
 const VolunteersCRM = () => {
@@ -21,6 +26,13 @@ const VolunteersCRM = () => {
          .then((allVolunteers) => setUsers(allVolunteers))
          .catch(console.log);
    }, []);
+
+   function handleDelete(user) {
+      deleteUser(API_URI, user.id)
+         .then(() => fetchUsers(API_URI))
+         .then(setUsers)
+         .catch(console.log);
+   }
 
    //User table row Component
    const MemberTr = ({ user = {}, index = 1 }) => {
@@ -42,7 +54,7 @@ const VolunteersCRM = () => {
             <td className="py-2">{user.gender}</td>
             {/*CRM  */}
             <td className="py-2 ">
-               <div class="d-flex">
+               <div className="d-flex">
                   <Button
                      className="me-2 btn-sm"
                      variant="warning btn-rounded"
@@ -55,10 +67,7 @@ const VolunteersCRM = () => {
                   </Button>
                   <Button
                      onClick={() => {
-                        axios
-                           .delete(`${API_URI}/${user._id}`)
-                           .then((res) => fetchUsers())
-                           .catch(console.log);
+                        handleDelete(user);
                      }}
                      className="me-2 btn-sm"
                      variant="primary btn-rounded"
@@ -101,21 +110,18 @@ const VolunteersCRM = () => {
       validationSchema: YupNewVolunteerSchema,
 
       async onSubmit(values) {
-         console.log(values);
          const processedValues = YupNewVolunteerSchema.validateSync(values);
-         console.log(processedValues);
-         // try {
-         //    if (form.values.id) {
-         //       await axios.put(`${API_URI}/${form.values.id}`, processedValues);
-         //    } else {
-         //       await axios.post(`${API_URI}`, processedValues);
-         //    }
-
-         //    form.resetForm();
-         //    fetchUsers();
-         // } catch (error) {
-         //    console.log(error);
-         // }
+         try {
+            if (form.values.id) {
+               await updateUser(API_URI, form.values.id, processedValues);
+            } else {
+               await createUser(API_URI, processedValues);
+            }
+            form.resetForm();
+            fetchUsers(API_URI).then(setUsers);
+         } catch (error) {
+            console.log(error);
+         }
       },
    });
 
@@ -186,7 +192,6 @@ const VolunteersCRM = () => {
 
                      <Input
                         label={fields.fullName}
-                        domName="fullName"
                         error={form.touched.fullName && form.errors.fullName}
                         required
                         {...form.getFieldProps("fullName")}
@@ -195,7 +200,6 @@ const VolunteersCRM = () => {
                      {/* email */}
                      <Input
                         label="Email"
-                        domName="email"
                         error={form.touched.email && form.errors.email}
                         type="email"
                         required
@@ -204,7 +208,6 @@ const VolunteersCRM = () => {
                      {/* phoneNumber */}
                      <Input
                         label="Phone"
-                        domName="phoneNumber"
                         error={
                            form.touched.phoneNumber && form.errors.phoneNumber
                         }
@@ -212,18 +215,9 @@ const VolunteersCRM = () => {
                         {...form.getFieldProps("phoneNumber")}
                      />
 
-                     {/* role */}
-                     <Input
-                        label="Role"
-                        domName="role"
-                        error={form.touched.role && form.errors.role}
-                        {...form.getFieldProps("role")}
-                     />
-
                      {/* location */}
                      <Input
                         label="Location"
-                        domName="location"
                         error={form.touched.location && form.errors.location}
                         {...form.getFieldProps("location")}
                      />
@@ -253,7 +247,6 @@ const VolunteersCRM = () => {
                      {/* positionAntilNow */}
                      <Input
                         label="positionAntilNow"
-                        domName="positionAntilNow"
                         error={
                            form.touched.positionAntilNow &&
                            form.errors.positionAntilNow
@@ -264,7 +257,6 @@ const VolunteersCRM = () => {
                      {/* fecerPosition */}
                      <Input
                         label="fecerPosition"
-                        domName="fecerPosition"
                         error={
                            form.touched.fecerPosition &&
                            form.errors.fecerPosition
@@ -275,7 +267,6 @@ const VolunteersCRM = () => {
                      {/* yearExperience */}
                      <Input
                         label="yearExperience"
-                        domName="yearExperience"
                         error={
                            form.touched.yearExperience &&
                            form.errors.yearExperience
@@ -286,7 +277,6 @@ const VolunteersCRM = () => {
                      {/* linkdinURL */}
                      <Input
                         label="linkdinURL"
-                        domName="linkdinURL"
                         error={
                            form.touched.linkdinURL && form.errors.linkdinURL
                         }
