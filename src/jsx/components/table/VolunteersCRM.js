@@ -28,7 +28,7 @@ const VolunteersCRM = () => {
    }, []);
 
    function handleDelete(user) {
-      deleteUser(API_URI, user.id)
+      deleteUser(API_URI, user._id)
          .then(() => fetchUsers(API_URI))
          .then(setUsers)
          .catch(console.log);
@@ -112,8 +112,8 @@ const VolunteersCRM = () => {
       async onSubmit(values) {
          const processedValues = YupNewVolunteerSchema.validateSync(values);
          try {
-            if (form.values.id) {
-               await updateUser(API_URI, form.values.id, processedValues);
+            if (form.values._id) {
+               await updateUser(API_URI, form.values._id, processedValues);
             } else {
                await createUser(API_URI, processedValues);
             }
@@ -303,7 +303,7 @@ const VolunteersCRM = () => {
                   }}
                   variant="primary"
                >
-                  {form.values.id ? "Edit member" : "Add member"}
+                  {form.values._id ? "Edit member" : "Add member"}
                </Button>
             </Modal.Footer>
          </Modal>

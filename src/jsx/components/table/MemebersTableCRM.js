@@ -25,7 +25,7 @@ const MembersTableCRM = () => {
    const API_URI = "https://65a8294194c2c5762da86419.mockapi.io/users";
 
    function handleDelete(user) {
-      deleteUser(API_URI, user.id)
+      deleteUser(API_URI, user._id)
          .then(() => fetchUsers(API_URI))
          .then(setUsers)
          .catch(console.log);
@@ -113,8 +113,8 @@ const MembersTableCRM = () => {
       async onSubmit(values) {
          const processedValues = YupNewMemberSchema().validateSync(values);
          try {
-            if (form.values.id) {
-               await updateUser(API_URI, form.values.id, processedValues);
+            if (form.values._id) {
+               await updateUser(API_URI, form.values._id, processedValues);
             } else {
                await createUser(API_URI, processedValues);
             }
@@ -327,7 +327,7 @@ const MembersTableCRM = () => {
                   }}
                   variant="primary"
                >
-                  {form.values.id ? "Edit member" : "Add member"}
+                  {form.values._id ? "Edit member" : "Add member"}
                </Button>
             </Modal.Footer>
          </Modal>
