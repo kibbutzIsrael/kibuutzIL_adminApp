@@ -25,13 +25,13 @@ const MembersTableCRM = () => {
   const API_URI = "https://kibbutzil.online/volunteers-forms/";
 
   function handleDelete(user) {
-    console.log(user, "user");
-    console.log("user");
+
     deleteUser(API_URI, user._id)
       .then(() => fetchUsers(API_URI))
       .then(setUsers)
       .catch(console.log);
   }
+
 
   //User table row Component
   const MemberTr = ({ user = {}, index = 1 }) => {
@@ -112,6 +112,7 @@ const MembersTableCRM = () => {
     },
     validationSchema: YupNewMemberSchema,
 
+<<<<<<< HEAD
     async onSubmit(values) {
       const processedValues = YupNewMemberSchema().validateSync(values);
       try {
@@ -120,6 +121,16 @@ const MembersTableCRM = () => {
         } else {
           await createUser(API_URI, processedValues);
         }
+=======
+      async onSubmit(values) {
+         const processedValues = YupNewMemberSchema().validateSync(values);
+         try {
+            if (form.values._id) {
+               await updateUser(API_URI, form.values._id, processedValues);
+            } else {
+               await createUser(API_URI, processedValues);
+            }
+>>>>>>> 06591c02f33c139cc77202641cbbc0571dd664ef
 
         form.resetForm();
         fetchUsers(API_URI).then(setUsers);
@@ -308,6 +319,7 @@ const MembersTableCRM = () => {
             onClick={() => {
               form.handleSubmit();
 
+<<<<<<< HEAD
               setBasicModal(false);
             }}
             variant="primary"
@@ -318,6 +330,18 @@ const MembersTableCRM = () => {
       </Modal>
     </Fragment>
   );
+=======
+                     setBasicModal(false);
+                  }}
+                  variant="primary"
+               >
+                  {form.values._id ? "Edit member" : "Add member"}
+               </Button>
+            </Modal.Footer>
+         </Modal>
+      </Fragment>
+   );
+>>>>>>> 06591c02f33c139cc77202641cbbc0571dd664ef
 };
 
 export default MembersTableCRM;

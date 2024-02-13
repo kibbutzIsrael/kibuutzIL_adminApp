@@ -27,12 +27,14 @@ const VolunteersCRM = () => {
       .catch(console.log);
   }, []);
 
+
   function handleDelete(user) {
     deleteUser(API_URI, user._id)
       .then(() => fetchUsers(API_URI))
       .then(setUsers)
       .catch(console.log);
   }
+
 
   //User table row Component
   const MemberTr = ({ user = {}, index = 1 }) => {
@@ -109,21 +111,22 @@ const VolunteersCRM = () => {
     },
     validationSchema: YupNewVolunteerSchema,
 
-    async onSubmit(values) {
-      const processedValues = YupNewVolunteerSchema.validateSync(values);
-      try {
-        if (form.values.id) {
-          await updateUser(API_URI, form.values.id, processedValues);
-        } else {
-          await createUser(API_URI, processedValues);
-        }
-        form.resetForm();
-        fetchUsers(API_URI).then(setUsers);
-      } catch (error) {
-        console.log(error);
-      }
-    },
-  });
+
+      async onSubmit(values) {
+         const processedValues = YupNewVolunteerSchema.validateSync(values);
+         try {
+            if (form.values._id) {
+               await updateUser(API_URI, form.values._id, processedValues);
+            } else {
+               await createUser(API_URI, processedValues);
+            }
+            form.resetForm();
+            fetchUsers(API_URI).then(setUsers);
+         } catch (error) {
+            console.log(error);
+         }
+      },
+   });
 
   return (
     <Fragment>
@@ -287,6 +290,7 @@ const VolunteersCRM = () => {
             onClick={() => {
               form.handleSubmit();
 
+<<<<<<< HEAD
               setBasicModal(false);
             }}
             variant="primary"
@@ -297,6 +301,18 @@ const VolunteersCRM = () => {
       </Modal>
     </Fragment>
   );
+=======
+                     setBasicModal(false);
+                  }}
+                  variant="primary"
+               >
+                  {form.values._id ? "Edit member" : "Add member"}
+               </Button>
+            </Modal.Footer>
+         </Modal>
+      </Fragment>
+   );
+>>>>>>> 06591c02f33c139cc77202641cbbc0571dd664ef
 };
 
 export default VolunteersCRM;
