@@ -1,28 +1,60 @@
 import React, { Fragment, useEffect, useState } from "react";
 import PageTitle from "../../layouts/PageTitle";
 import { Row, Col, Card, Table, Button, Modal } from "react-bootstrap";
+import axios from "axios";
 import { useFormik } from "formik";
 
 import { fields } from "../../../lib/tableFields";
 import { Input } from "../creatdComponents/Input";
-import {
-   createUser,
-   deleteUser,
-   fetchUsers,
-   updateUser,
-} from "../../../lib/userCRUD";
+import { createUser, deleteUser, updateUser } from "../../../lib/userCRUD";
 import { YupUserSchema } from "../../../lib/YupMemberSchema";
+import SortingTH from "../creatdComponents/SortingTH";
+import SearchByInput from "../creatdComponents/SeachByInput";
 
-const MembersTableCRM = () => {
+const VolunteersCRM = () => {
    const [users, setUsers] = useState([]);
    const [basicModal, setBasicModal] = useState(false);
-   const [serverError, setServerError] = useState(null);
+   const [sortBy, setSortBy] = useState("Name-A-B");
+
+   const API_URI = "https://kibbutzil.online/volunteers-forms";
+   const API_URI_FILTERED = "https://kibbutzil.online/volunteers-forms/filters";
+
+   const sortByOption = {
+      name: { sortBy: "Name", asc: "Name-A-B", desc: "Name-B-A" },
+      yearExperience: {
+         sortBy: "yearExperience",
+         asc: "yearExperience-1-9",
+         desc: "yearExperience-9-1",
+      },
+   };
+
+   async function fetchUsers() {
+      const filter = {
+         sortOrder: sortBy,
+      };
+      try {
+         const users = await axios.post(API_URI_FILTERED, filter);
+         setUsers(users.data);
+      } catch (error) {
+         console.log(error);
+      }
+   }
+
+   async function searchUser(search) {
+      const { searchBy, searchValue } = search;
+      try {
+         const user = await axios.post(API_URI_FILTERED, {
+            [searchBy]: searchValue,
+         });
+         setUsers(user.data);
+      } catch (error) {
+         console.log(error);
+      }
+   }
 
    useEffect(() => {
-      fetchUsers(API_URI).then(setUsers).catch(console.log);
-   }, []);
-
-   const API_URI = "https://kibbutzil.online/volunteers-forms/";
+      fetchUsers();
+   }, [sortBy]);
 
    function handleDelete(user) {
       deleteUser(API_URI, user._id)
@@ -33,22 +65,24 @@ const MembersTableCRM = () => {
 
    //User table row Component
    const MemberTr = ({ user = {}, index = 1 }) => {
-      if (!user.firstName) return;
+      if (!user.fullName) return;
       return (
          <tr>
             <th className="align-middle">{index + 1}</th>
             {/*fullName  */}
-            <td className="py-2">{user.firstName + " " + user.lastName}</td>
+            <td className="py-2">
+               <span>{user.fullName}</span>
+               <span></span>
+            </td>
             {/*email  */}
             <td className="py-2">{user.email}</td>
-            {/*role  */}
-            <td className="py-2">{user.role}</td>
-            {/*location  */}
-            <td className="py-2">{user.location}</td>
+            {/*years experience  */}
+            <td className="py-2">{user.yearExperience}</td>
+
             {/*phoneNumber  */}
             <td className="py-2">{user.phoneNumber}</td>
             {/*gender  */}
-            <td className="py-2">{user.gender ? "Male" : "Female"}</td>
+            <td className="py-2">{user.gender}</td>
             {/*CRM  */}
             <td className="py-2 ">
                <div className="d-flex">
@@ -56,16 +90,17 @@ const MembersTableCRM = () => {
                      className="me-2 btn-sm"
                      variant="warning btn-rounded"
                      onClick={() => {
-                        form.setValues({
-                           user,
-                        });
+                        form.setValues(user);
+                        console.log(user);
                         setBasicModal(true);
                      }}
                   >
                      <i className="bi bi-pencil-square fs-5"></i>
                   </Button>
                   <Button
-                     onClick={() => handleDelete(user)}
+                     onClick={() => {
+                        handleDelete(user);
+                     }}
                      className="me-2 btn-sm"
                      variant="primary btn-rounded"
                   >
@@ -77,11 +112,9 @@ const MembersTableCRM = () => {
       );
    };
 
-   const YupNewMemberSchema = YupUserSchema().pick([
-      "firstName",
-      "lastName",
+   const YupNewVolunteerSchema = YupUserSchema().pick([
+      "fullName",
       "email",
-      "role",
       "location",
       "phoneNumber",
       "gender",
@@ -96,10 +129,8 @@ const MembersTableCRM = () => {
       validateOnMount: true,
 
       initialValues: {
-         firstName: "",
-         lastName: "",
+         fullName: "",
          email: "",
-         role: "",
          location: "",
          phoneNumber: "",
          gender: "",
@@ -108,17 +139,16 @@ const MembersTableCRM = () => {
          yearExperience: "",
          linkdinURL: "",
       },
-      validationSchema: YupNewMemberSchema,
+      validationSchema: YupNewVolunteerSchema,
 
       async onSubmit(values) {
-         const processedValues = YupNewMemberSchema().validateSync(values);
+         const processedValues = YupNewVolunteerSchema.validateSync(values);
          try {
             if (form.values._id) {
                await updateUser(API_URI, form.values._id, processedValues);
             } else {
                await createUser(API_URI, processedValues);
             }
-
             form.resetForm();
             fetchUsers(API_URI).then(setUsers);
          } catch (error) {
@@ -133,10 +163,16 @@ const MembersTableCRM = () => {
          <Row>
             <Col lg={12}>
                <Card>
-                  <Card.Header>
-                     <Card.Title>Members</Card.Title>
+                  <Card.Header className="gap-3">
+                     <Card.Title className="col-2">Members</Card.Title>
+
+                     <SearchByInput
+                        onSearchClick={searchUser}
+                        onResetClick={fetchUsers}
+                     />
+
                      <Button
-                        className="me-2"
+                        className="me-2 col-2"
                         variant="outline-primary"
                         onClick={() => setBasicModal(true)}
                      >
@@ -148,27 +184,30 @@ const MembersTableCRM = () => {
                         <thead>
                            <tr>
                               <th>#</th>
-                              <th>{fields.fullName}</th>
+
+                              <SortingTH
+                                 title={fields.fullName}
+                                 setSortBy={setSortBy}
+                                 sortBy={sortBy}
+                                 filter={sortByOption.name}
+                              />
+
                               <th>{fields.email}</th>
-                              <th>{fields.role}</th>
-                              <th>{fields.location}</th>
+                              <SortingTH
+                                 title={fields.yearExperience}
+                                 setSortBy={setSortBy}
+                                 sortBy={sortBy}
+                                 filter={sortByOption.yearExperience}
+                              />
                               <th>{fields.phoneNumber}</th>
                               <th>{fields.gender}</th>
                               <th>CRM</th>
                            </tr>
                         </thead>
                         <tbody>
-                           {users
-                              .map((user, index) => {
-                                 return (
-                                    <MemberTr
-                                       key={index}
-                                       user={user}
-                                       index={index}
-                                    />
-                                 );
-                              })
-                              .sort()}
+                           {users.map((user, index) => (
+                              <MemberTr key={index} user={user} index={index} />
+                           ))}
                         </tbody>
                      </Table>
                   </Card.Body>
@@ -198,22 +237,13 @@ const MembersTableCRM = () => {
             <Modal.Body>
                <div className="basic-form">
                   <form onSubmit={(e) => e.preventDefault()}>
-                     {/* first name */}
+                     {/* Full name */}
 
                      <Input
-                        label={fields.firstName}
-                        error={form.touched.firstName && form.errors.firstName}
+                        label={fields.fullName}
+                        error={form.touched.fullName && form.errors.fullName}
                         required
-                        {...form.getFieldProps("firstName")}
-                     />
-
-                     {/* last name */}
-
-                     <Input
-                        label="Last Name"
-                        error={form.touched.lastName && form.errors.lastName}
-                        required
-                        {...form.getFieldProps("lastName")}
+                        {...form.getFieldProps("fullName")}
                      />
 
                      {/* email */}
@@ -234,13 +264,6 @@ const MembersTableCRM = () => {
                         {...form.getFieldProps("phoneNumber")}
                      />
 
-                     {/* role */}
-                     <Input
-                        label="Role"
-                        error={form.touched.role && form.errors.role}
-                        {...form.getFieldProps("role")}
-                     />
-
                      {/* location */}
                      <Input
                         label="Location"
@@ -250,20 +273,25 @@ const MembersTableCRM = () => {
 
                      {/* gender */}
                      <div className="form-group mb-3 row">
-                        <label className="col-sm-3 col-form-label">
+                        <label
+                           htmlFor="gender"
+                           className="col-sm-3 col-form-label"
+                        >
                            Gender
                         </label>
                         <div className="col-sm-9">
                            <select
-                              defaultValue="default"
                               className="form-select"
                               style={{ height: "3rem" }}
-                              id="sel1"
-                              {...form.getFieldProps("gender")}
+                              id="gender"
+                              value={form.values.gender}
+                              onChange={(e) =>
+                                 form.setFieldValue("gender", e.target.value)
+                              }
                            >
-                              <option value="">Choose...</option>
-                              <option value="Male">Male</option>
-                              <option value="Female">Female</option>
+                              <option>Choose...</option>
+                              <option value="male">Male</option>
+                              <option value="female">Female</option>
                            </select>
                         </div>
                      </div>
@@ -335,4 +363,4 @@ const MembersTableCRM = () => {
    );
 };
 
-export default MembersTableCRM;
+export default VolunteersCRM;
