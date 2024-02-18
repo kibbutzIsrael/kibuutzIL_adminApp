@@ -27,7 +27,6 @@ export function getAuthHeader() {
    }
 
    const sanitizedToken = jwtToken.replace(/["']/g, ""); // Remove both single and double quotes
-   console.log(`Bearer ${sanitizedToken}`);
    return `Bearer ${sanitizedToken}`;
 }
 
