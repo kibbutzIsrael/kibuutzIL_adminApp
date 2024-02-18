@@ -11,6 +11,7 @@ import { YupUserSchema } from "../../../lib/YupMemberSchema";
 import SortingTH from "../creatdComponents/SortingTH";
 import SearchByInput from "../creatdComponents/SeachByInput";
 import { useSearchParams } from "react-router-dom";
+import swal from "sweetalert";
 
 const VolunteersCRM = () => {
    const [users, setUsers] = useState([]);
@@ -64,8 +65,30 @@ const VolunteersCRM = () => {
       try {
          await deleteUser(API_URI, user._id);
          fetchUsers();
+         swal("OK", "Successfully deleted", "success");
       } catch (error) {
+         swal("Oops", "Something went wrong!", "error");
          console.log(error);
+      }
+   }
+
+   async function handleCvDownload(id) {
+      try {
+         const res = await axios.get(
+            `https://kibbutzil.online/volunteers-forms/CV/${id}`,
+            { responseType: "blob" }
+         );
+
+         if (res.status !== 200) throw new Error("No CV found");
+         const url = window.URL.createObjectURL(new Blob([res.data]));
+         const link = document.createElement("a");
+         link.href = url;
+         link.setAttribute("download", "cv_file.pdf");
+         link.click();
+         window.URL.revokeObjectURL(url);
+      } catch (error) {
+         swal("Oops", "No CV found", "error");
+         console.error();
       }
    }
 
@@ -82,11 +105,27 @@ const VolunteersCRM = () => {
             </td>
             {/*email  */}
             <td className="py-2">{user.email}</td>
-            {/*years experience  */}
-            <td className="py-2">{user.yearExperience}</td>
 
             {/*phoneNumber  */}
             <td className="py-2">{user.phoneNumber}</td>
+
+            {/*cv  */}
+            <td className="py-2">
+               <Button
+                  onClick={() => handleCvDownload(user._id)}
+                  className="me-2"
+                  variant="light btn-rounded btn-sm d-flex"
+               >
+                  <span className="btn-icon-start text-light">
+                     <i className="fa fa-download color-light" />
+                  </span>
+                  <div>CV</div>
+               </Button>
+            </td>
+
+            {/*years experience  */}
+            <td className="py-2 col-1">{user.yearExperience}</td>
+
             {/*gender  */}
             <td className="py-2">{user.gender}</td>
             {/*CRM  */}
@@ -152,12 +191,15 @@ const VolunteersCRM = () => {
          try {
             if (form.values._id) {
                await updateUser(API_URI, form.values._id, processedValues);
+               swal("OK", "Successfully edited", "success");
             } else {
                await createUser(API_URI, processedValues);
+               swal("OK", "Successfully added", "success");
             }
             form.resetForm();
             fetchUsers();
          } catch (error) {
+            swal("Oops", "Something went wrong!", "error");
             console.log(error);
          }
       },
@@ -197,13 +239,13 @@ const VolunteersCRM = () => {
                                  title={fields.fullName}
                                  filter={sortByOptions.name}
                               />
-
                               <th>{fields.email}</th>
+                              <th>{fields.phoneNumber}</th>
+                              <th>{fields.cv}</th>
                               <SortingTH
                                  title={fields.yearExperience}
                                  filter={sortByOptions.yearExperience}
                               />
-                              <th>{fields.phoneNumber}</th>
                               <th>{fields.gender}</th>
                               <th>CRM</th>
                            </tr>
