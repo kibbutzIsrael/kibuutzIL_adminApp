@@ -56,11 +56,13 @@ const VolunteersCRM = () => {
       fetchUsers();
    }, [sortBy]);
 
-   function handleDelete(user) {
-      deleteUser(API_URI, user._id)
-         .then(() => fetchUsers(API_URI))
-         .then(setUsers)
-         .catch(console.log);
+   async function handleDelete(user) {
+      try {
+         await deleteUser(API_URI, user._id);
+         fetchUsers();
+      } catch (error) {
+         console.log(error);
+      }
    }
 
    //User table row Component
@@ -150,7 +152,7 @@ const VolunteersCRM = () => {
                await createUser(API_URI, processedValues);
             }
             form.resetForm();
-            fetchUsers(API_URI).then(setUsers);
+            fetchUsers();
          } catch (error) {
             console.log(error);
          }

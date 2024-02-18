@@ -11,7 +11,7 @@ import logo from "../../images/logo-full.png";
 import loginbg from "../../images/pic1.png";
 
 function Login(props) {
-   const [email, setEmail] = useState("yoelbl2@gmail.com");
+   const [email, setEmail] = useState("yoelbl10@gmail.com");
    let errorsObj = { email: "", password: "" };
    const [errors, setErrors] = useState(errorsObj);
    const [password, setPassword] = useState("Aa123456@");
