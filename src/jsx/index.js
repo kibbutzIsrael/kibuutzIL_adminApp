@@ -206,7 +206,10 @@ const Markup = () => {
       { url: "table-datatable-basic", component: <DataTable /> },
       { url: "table-bootstrap-basic", component: <BootstrapTable /> },
       { url: "members-table-crm", component: <MembersTableCRM /> },
-      { url: "volunteers-crm", component: <VolunteersCRM /> },
+      {
+         url: "volunteers-crm",
+         component: <VolunteersCRM />,
+      },
 
       /// pages
       //{ url: "page-register", component: Registration },

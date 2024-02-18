@@ -3,6 +3,7 @@ const fields = {
    lastName: "Last Name",
    fullName: "Full Name",
    email: "Email",
+   cv: "CV",
    role: "Role",
    location: "Location",
    phoneNumber: "Phone",

@@ -9,44 +9,22 @@ function emptyStringToUndefined(string) {
 function YupUserSchema() {
    return yup
       .object({
-         firstName: yup.string().min(2).required().label(fields.firstName),
-         lastName: yup.string().min(2).required().label(fields.lastName),
-         fullName: yup.string().min(2).required().label(fields.fullName),
-         email: yup.string().email().required().label(fields.email),
-         role: yup
-            .string()
-            .transform(emptyStringToUndefined)
-            .label(fields.role),
-         location: yup
-            .string()
-            .transform(emptyStringToUndefined)
-            .label(fields.location),
+         firstName: yup.string().min(2).required(),
+         lastName: yup.string().min(2).required(),
+         fullName: yup.string().min(2).required(),
+         email: yup.string().email().required(),
+         password: yup.string().min(5).required(),
+         role: yup.string().transform(emptyStringToUndefined),
+         location: yup.string().transform(emptyStringToUndefined),
          phoneNumber: yup
             .string()
             .matches(/^0\d{8,9}$/, "Invalid phone number")
-            .required()
-            .label(fields.phoneNumber),
-         gender: yup
-            .string()
-            .transform(emptyStringToUndefined)
-            .label(fields.gender),
-         positionAntilNow: yup
-            .string()
-            .transform(emptyStringToUndefined)
-            .label(fields.positionAntilNow),
-         fecerPosition: yup
-            .string()
-            .transform(emptyStringToUndefined)
-            .label(fields.fecerPosition),
-         yearExperience: yup
-            .string()
-            .transform(emptyStringToUndefined)
-            .label(fields.yearExperience),
-         linkdinURL: yup
-            .string()
-            .transform(emptyStringToUndefined)
-            .url()
-            .label(fields.linkdinURL),
+            .required(),
+         gender: yup.string().transform(emptyStringToUndefined),
+         positionAntilNow: yup.string().transform(emptyStringToUndefined),
+         fecerPosition: yup.string().transform(emptyStringToUndefined),
+         yearExperience: yup.string().transform(emptyStringToUndefined),
+         linkdinURL: yup.string().transform(emptyStringToUndefined).url(),
       })
       .required();
 }
