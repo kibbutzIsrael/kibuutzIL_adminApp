@@ -13,7 +13,7 @@ const SearchByInput = ({ onSearchClick, onResetClick }) => {
 
    return (
       <div className="input-group">
-         <span className="input-group-text">Search By</span>
+         <span className="input-group-text text-black">Search By</span>
          <select
             defaultValue={"email"}
             className="btn btn-primary"
@@ -32,7 +32,7 @@ const SearchByInput = ({ onSearchClick, onResetClick }) => {
          <button className="btn btn-primary" onClick={handleSearch}>
             Search
          </button>
-         <button className="btn btn-primary light" onClick={handleReset}>
+         <button className="btn btn-light text-black" onClick={handleReset}>
             Reset
          </button>
       </div>
