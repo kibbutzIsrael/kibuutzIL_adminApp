@@ -10,16 +10,25 @@ import { createUser, deleteUser, updateUser } from "../../../lib/userCRUD";
 import { YupUserSchema } from "../../../lib/YupMemberSchema";
 import SortingTH from "../creatdComponents/SortingTH";
 import SearchByInput from "../creatdComponents/SeachByInput";
+import { useSearchParams } from "react-router-dom";
 
 const VolunteersCRM = () => {
    const [users, setUsers] = useState([]);
    const [basicModal, setBasicModal] = useState(false);
-   const [sortBy, setSortBy] = useState("Name-A-B");
+   const [searchParams, setSearchParams] = useSearchParams();
+   const sortOrder = searchParams.get("sortOrder");
+
+   useEffect(() => {
+      if (!sortOrder) {
+         setSearchParams({ sortOrder: "Name-A-B" });
+      }
+      fetchUsers();
+   }, [searchParams]);
 
    const API_URI = "https://kibbutzil.online/volunteers-forms";
    const API_URI_FILTERED = "https://kibbutzil.online/volunteers-forms/filters";
 
-   const sortByOption = {
+   const sortByOptions = {
       name: { sortBy: "Name", asc: "Name-A-B", desc: "Name-B-A" },
       yearExperience: {
          sortBy: "yearExperience",
@@ -29,12 +38,11 @@ const VolunteersCRM = () => {
    };
 
    async function fetchUsers() {
-      const filter = {
-         sortOrder: sortBy,
-      };
       try {
-         const users = await axios.post(API_URI_FILTERED, filter);
+         const users = await axios.post(API_URI_FILTERED, { sortOrder });
+
          setUsers(users.data);
+         // console.log(users);
       } catch (error) {
          console.log(error);
       }
@@ -51,10 +59,6 @@ const VolunteersCRM = () => {
          console.log(error);
       }
    }
-
-   useEffect(() => {
-      fetchUsers();
-   }, [sortBy]);
 
    async function handleDelete(user) {
       try {
@@ -114,6 +118,7 @@ const VolunteersCRM = () => {
       );
    };
 
+   //Formik
    const YupNewVolunteerSchema = YupUserSchema().pick([
       "fullName",
       "email",
@@ -126,7 +131,6 @@ const VolunteersCRM = () => {
       "linkdinURL",
    ]);
 
-   //Formik
    const form = useFormik({
       validateOnMount: true,
 
@@ -159,6 +163,8 @@ const VolunteersCRM = () => {
       },
    });
 
+   if (!sortOrder) return null;
+
    return (
       <Fragment>
          <PageTitle activeMenu="Members table CRM" motherMenu="Tables" />
@@ -189,17 +195,13 @@ const VolunteersCRM = () => {
 
                               <SortingTH
                                  title={fields.fullName}
-                                 setSortBy={setSortBy}
-                                 sortBy={sortBy}
-                                 filter={sortByOption.name}
+                                 filter={sortByOptions.name}
                               />
 
                               <th>{fields.email}</th>
                               <SortingTH
                                  title={fields.yearExperience}
-                                 setSortBy={setSortBy}
-                                 sortBy={sortBy}
-                                 filter={sortByOption.yearExperience}
+                                 filter={sortByOptions.yearExperience}
                               />
                               <th>{fields.phoneNumber}</th>
                               <th>{fields.gender}</th>
