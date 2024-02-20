@@ -48,8 +48,9 @@ function Login(props) {
           </div>
           <h3 className="mb-2">Welcome back!</h3>
           <p>
-            User Experience & Interface Design <br />
-            Strategy SaaS Solutions
+            We connect the Israeli High-tech Ecosystem with social
+            problem-solvers, working together to face main local challenges.
+            <br />
           </p>
         </div>
         <div
@@ -111,7 +112,7 @@ function Login(props) {
                         </div>
                       )}
                     </div>
-                    <div className="form-row d-flex justify-content-between mt-4 mb-2">
+                    {/* <div className="form-row d-flex justify-content-between mt-4 mb-2">
                       <div className="form-group mb-3">
                         <div className="custom-control custom-checkbox ml-1">
                           <input
@@ -126,8 +127,8 @@ function Login(props) {
                             Remember my preference
                           </label>
                         </div>
-                      </div>
-                    </div>
+                      </div> 
+                    </div> */}
                     <div className="text-center form-group mb-3">
                       <button
                         type="submit"
@@ -137,14 +138,14 @@ function Login(props) {
                       </button>
                     </div>
                   </form>
-                  <div className="new-account mt-3">
+                  {/* <div className="new-account mt-3">
                     <p>
                       Don't have an account?{" "}
                       <Link className="text-primary" to="/page-register">
                         Sign up
                       </Link>
                     </p>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
