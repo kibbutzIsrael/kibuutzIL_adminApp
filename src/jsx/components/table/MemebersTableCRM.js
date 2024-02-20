@@ -12,6 +12,8 @@ import {
    updateUser,
 } from "../../../lib/userCRUD";
 import { YupUserSchema } from "../../../lib/YupMemberSchema";
+import swal from "sweetalert";
+import { generateRandomPassword } from "../../../lib/generatePassword";
 
 const MembersTableCRM = () => {
    const [users, setUsers] = useState([]);
@@ -19,10 +21,14 @@ const MembersTableCRM = () => {
    const [serverError, setServerError] = useState(null);
 
    useEffect(() => {
-      fetchUsers(API_URI).then(setUsers).catch(console.log);
+      fetchUsers(API_URI)
+         .then((res) => {
+            setUsers(res.data);
+         })
+         .catch(console.log);
    }, []);
 
-   const API_URI = "https://kibbutzil.online/volunteers-forms/";
+   const API_URI = "https://kibbutzil.online/users";
 
    function handleDelete(user) {
       deleteUser(API_URI, user._id)
@@ -48,7 +54,7 @@ const MembersTableCRM = () => {
             {/*phoneNumber  */}
             <td className="py-2">{user.phoneNumber}</td>
             {/*gender  */}
-            <td className="py-2">{user.gender ? "Male" : "Female"}</td>
+            <td className="py-2">{user.gender}</td>
             {/*CRM  */}
             <td className="py-2 ">
                <div className="d-flex">
@@ -56,9 +62,8 @@ const MembersTableCRM = () => {
                      className="me-2 btn-sm"
                      variant="warning btn-rounded"
                      onClick={() => {
-                        form.setValues({
-                           user,
-                        });
+                        form.setValues(user);
+                        console.log(user);
                         setBasicModal(true);
                      }}
                   >
@@ -99,7 +104,8 @@ const MembersTableCRM = () => {
          firstName: "",
          lastName: "",
          email: "",
-         role: "",
+         password: generateRandomPassword(12),
+         role: "user",
          location: "",
          phoneNumber: "",
          gender: "",
@@ -111,17 +117,27 @@ const MembersTableCRM = () => {
       validationSchema: YupNewMemberSchema,
 
       async onSubmit(values) {
-         const processedValues = YupNewMemberSchema().validateSync(values);
+         const processedValues = await YupNewMemberSchema.validate(values);
          try {
             if (form.values._id) {
                await updateUser(API_URI, form.values._id, processedValues);
+               swal("OK", "User updated", "success");
             } else {
-               await createUser(API_URI, processedValues);
+               processedValues.passwordConfirm = form.values.password;
+               const res = await createUser(
+                  `${API_URI}/signup`,
+                  processedValues
+               );
+               console.log(res);
+               swal("OK", "User created", "success");
             }
+            setBasicModal(false);
 
             form.resetForm();
-            fetchUsers(API_URI).then(setUsers);
+            fetchUsers(API_URI).then((res) => setUsers(res.data));
          } catch (error) {
+            swal("Oops", "Something went wrong!", "error");
+
             console.log(error);
          }
       },
@@ -224,6 +240,14 @@ const MembersTableCRM = () => {
                         required
                         {...form.getFieldProps("email")}
                      />
+
+                     <Input
+                        label="Generated Password"
+                        type="text"
+                        readOnly
+                        disabled
+                        value={form.values.password}
+                     />
                      {/* phoneNumber */}
                      <Input
                         label="Phone"
@@ -235,11 +259,28 @@ const MembersTableCRM = () => {
                      />
 
                      {/* role */}
-                     <Input
-                        label="Role"
-                        error={form.touched.role && form.errors.role}
-                        {...form.getFieldProps("role")}
-                     />
+
+                     <div className="form-group mb-3 row">
+                        <label
+                           htmlFor="role"
+                           className="col-sm-3 col-form-label"
+                        >
+                           Role
+                        </label>
+                        <div className="col-sm-9">
+                           <select
+                              className="form-select"
+                              style={{ height: "3rem" }}
+                              id="role"
+                              name="role"
+                              value={form.values.role}
+                              onChange={form.handleChange}
+                           >
+                              <option value="user">User</option>
+                              <option value="admin">Admin</option>
+                           </select>
+                        </div>
+                     </div>
 
                      {/* location */}
                      <Input
@@ -250,20 +291,25 @@ const MembersTableCRM = () => {
 
                      {/* gender */}
                      <div className="form-group mb-3 row">
-                        <label className="col-sm-3 col-form-label">
+                        <label
+                           htmlFor="gender"
+                           className="col-sm-3 col-form-label"
+                        >
                            Gender
                         </label>
                         <div className="col-sm-9">
                            <select
-                              defaultValue="default"
                               className="form-select"
                               style={{ height: "3rem" }}
-                              id="sel1"
-                              {...form.getFieldProps("gender")}
+                              id="gender"
+                              value={form.values.gender}
+                              onChange={(e) =>
+                                 form.setFieldValue("gender", e.target.value)
+                              }
                            >
-                              <option value="">Choose...</option>
-                              <option value="Male">Male</option>
-                              <option value="Female">Female</option>
+                              <option>Choose...</option>
+                              <option value="male">Male</option>
+                              <option value="female">Female</option>
                            </select>
                         </div>
                      </div>
@@ -319,14 +365,7 @@ const MembersTableCRM = () => {
                >
                   Close
                </Button>
-               <Button
-                  onClick={() => {
-                     form.handleSubmit();
-
-                     setBasicModal(false);
-                  }}
-                  variant="primary"
-               >
+               <Button onClick={form.handleSubmit} variant="primary">
                   {form.values._id ? "Edit member" : "Add member"}
                </Button>
             </Modal.Footer>
