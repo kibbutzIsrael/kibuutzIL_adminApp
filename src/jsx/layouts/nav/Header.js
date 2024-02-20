@@ -55,7 +55,7 @@ const Header = ({ onNote }) => {
                   : finalName.join(" ")}
               </div>
             </div>
-            {/* <div className="nav-item d-flex align-items-center">
+            {/*  <div className="nav-item d-flex align-items-center">
 				<div className="input-group search-area">
 					<input type="text" 
 						className={`form-control ${searchBut ? "active" : ""}`}
@@ -65,8 +65,8 @@ const Header = ({ onNote }) => {
 						<Link to={"#"}><i className="flaticon-381-search-2"></i></Link>
 					</span>
 				</div>
-			</div>  */}
-            {/* <ul className="navbar-nav header-right">
+			</div> 
+            <ul className="navbar-nav header-right">
 					
 				<Dropdown
 					as="li"
@@ -349,6 +349,7 @@ const Header = ({ onNote }) => {
 					</Dropdown.Menu>
 				</Dropdown> 				
             </ul> */}
+            <LogoutPage />
           </div>
         </nav>
       </div>
