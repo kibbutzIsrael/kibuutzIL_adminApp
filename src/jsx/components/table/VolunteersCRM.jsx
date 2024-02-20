@@ -136,7 +136,6 @@ const VolunteersCRM = () => {
                      variant="warning btn-rounded"
                      onClick={() => {
                         form.setValues(user);
-                        console.log(user);
                         setBasicModal(true);
                      }}
                   >

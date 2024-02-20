@@ -41,34 +41,40 @@ export const MenuList = [
     //  ],
   },
 
-  //Table
-  {
-    title: "Table",
-    classsChange: "mm-collapse",
-    iconStyle: <i className="fas fa-table"></i>,
-    content: [
-      {
-        title: "Table Filtering",
-        to: "table-filtering",
-      },
-      {
-        title: "Table Sorting",
-        to: "table-sorting",
-      },
-      {
-        title: "Bootstrap",
-        to: "table-bootstrap-basic",
-      },
-      {
-        title: "Members Table CRM",
-        to: "members-table-crm",
-      },
-      {
-        title: "Volunteers CRM",
-        to: "volunteers-crm?sortOrder=Name-A-B",
-      },
-    ],
-  },
+
+   //Table
+   {
+      title: "Table",
+      classsChange: "mm-collapse",
+      iconStyle: <i className="fas fa-table"></i>,
+      content: [
+         {
+            title: "Members Table CRM",
+            to: "members-table-crm",
+         },
+         {
+            title: "Volunteers CRM",
+            to: "volunteers-crm?sortOrder=Name-A-B",
+         },
+         {
+            title: "Organizations CRM",
+            to: "organizations-crm",
+         },
+         // {
+         //    title: "Table Filtering",
+         //    to: "table-filtering",
+         // },
+         // {
+         //    title: "Table Sorting",
+         //    to: "table-sorting",
+         // },
+         // {
+         //    title: "Bootstrap",
+         //    to: "table-bootstrap-basic",
+         // },
+      ],
+   },
+
 
   // //Apps
   // {

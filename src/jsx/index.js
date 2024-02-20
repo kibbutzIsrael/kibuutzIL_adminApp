@@ -111,6 +111,7 @@ import Setting from "./layouts/Setting";
 import { ThemeContext } from "../context/ThemeContext";
 import MembersTableCRM from "./components/table/MemebersTableCRM";
 import VolunteersCRM from "./components/table/VolunteersCRM";
+import OrganizationsCRM from "./components/table/OrganizationsCRM";
 
 const Markup = () => {
    // const { menuToggle } = useContext(ThemeContext);
@@ -209,6 +210,10 @@ const Markup = () => {
       {
          url: "volunteers-crm",
          component: <VolunteersCRM />,
+      },
+      {
+         url: "organizations-crm",
+         component: <OrganizationsCRM />,
       },
 
       /// pages
