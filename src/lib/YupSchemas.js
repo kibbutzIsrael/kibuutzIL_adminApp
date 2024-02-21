@@ -6,7 +6,7 @@ function emptyStringToUndefined(string) {
    return string;
 }
 
-function YupUserSchema() {
+export function YupUserSchema() {
    return yup
       .object({
          firstName: yup.string().min(2).required(),
@@ -29,4 +29,35 @@ function YupUserSchema() {
       .required();
 }
 
-export { YupUserSchema };
+export function yupOrganizationSchema() {
+   return yup
+      .object({
+         organizationName: yup
+            .string()
+            .min(2)
+            .required()
+            .label("Organization name"),
+         organizationPhoneNumber: yup
+            .string()
+            .matches(/^0\d{8,9}$/)
+            .required()
+            .label("Phone"),
+         organizationContactName: yup
+            .string()
+            .min(2)
+            .required()
+            .label("Contact"),
+         organizationEmail: yup.string().email().required().label("Email"),
+         organizationMessageBody: yup
+            .string()
+            .min(10)
+            .required()
+            .label("Message"),
+         organizationType: yup
+            .string()
+            .transform(emptyStringToUndefined)
+            .label("Organization Type"),
+         status: yup.string(),
+      })
+      .required();
+}

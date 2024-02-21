@@ -11,7 +11,7 @@ import {
    fetchUsers,
    updateUser,
 } from "../../../lib/userCRUD";
-import { YupUserSchema } from "../../../lib/YupMemberSchema";
+import { YupUserSchema } from "../../../lib/YupSchemas";
 import swal from "sweetalert";
 import { generateRandomPassword } from "../../../lib/generatePassword";
 

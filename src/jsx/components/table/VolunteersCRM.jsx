@@ -7,7 +7,7 @@ import { useFormik } from "formik";
 import { fields } from "../../../lib/tableFields";
 import { Input } from "../creatdComponents/Input";
 import { createUser, deleteUser, updateUser } from "../../../lib/userCRUD";
-import { YupUserSchema } from "../../../lib/YupMemberSchema";
+import { YupUserSchema } from "../../../lib/YupSchemas";
 import SortingTH from "../creatdComponents/SortingTH";
 import SearchByInput from "../creatdComponents/SeachByInput";
 import { useSearchParams } from "react-router-dom";
