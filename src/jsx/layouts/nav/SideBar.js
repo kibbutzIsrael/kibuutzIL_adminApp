@@ -10,6 +10,8 @@ import { ThemeContext } from "../../../context/ThemeContext";
 
 import profile from "../../../images/user.jpg";
 
+import LogoutPage from "./Logout"
+
 const reducer = (previousState, updatedState) => ({
    ...previousState,
    ...updatedState,
@@ -71,15 +73,14 @@ const SideBar = () => {
       <div
          onMouseEnter={() => ChangeIconSidebar(true)}
          onMouseLeave={() => ChangeIconSidebar(false)}
-         className={`dlabnav ${iconHover} ${
-            sidebarposition.value === "fixed" &&
-            sidebarLayout.value === "horizontal" &&
-            headerposition.value === "static"
+         className={`dlabnav ${iconHover} ${sidebarposition.value === "fixed" &&
+               sidebarLayout.value === "horizontal" &&
+               headerposition.value === "static"
                ? hideOnScroll > 120
                   ? "fixed"
                   : ""
                : ""
-         }`}
+            }`}
       >
          <PerfectScrollbar className="dlabnav-scroll">
             <ul className="metismenu" id="menu">
@@ -94,9 +95,8 @@ const SideBar = () => {
                   } else {
                      return (
                         <li
-                           className={` ${
-                              state.active === data.title ? "mm-active" : ""
-                           }`}
+                           className={` ${state.active === data.title ? "mm-active" : ""
+                              }`}
                            key={index}
                         >
                            {data.content && data.content.length > 0 ? (
@@ -121,26 +121,24 @@ const SideBar = () => {
                                     }
                                  >
                                     <ul
-                                       className={`${
-                                          menuClass === "mm-collapse"
+                                       className={`${menuClass === "mm-collapse"
                                              ? "mm-show"
                                              : ""
-                                       }`}
+                                          }`}
                                     >
                                        {data.content &&
                                           data.content.map((data, index) => {
                                              return (
                                                 <li
                                                    key={index}
-                                                   className={`${
-                                                      state.activeSubmenu ===
-                                                      data.title
+                                                   className={`${state.activeSubmenu ===
+                                                         data.title
                                                          ? "mm-active"
                                                          : ""
-                                                   }`}
+                                                      }`}
                                                 >
                                                    {data.content &&
-                                                   data.content.length > 0 ? (
+                                                      data.content.length > 0 ? (
                                                       <>
                                                          <Link
                                                             to={data.to}
@@ -160,18 +158,17 @@ const SideBar = () => {
                                                          <Collapse
                                                             in={
                                                                state.activeSubmenu ===
-                                                               data.title
+                                                                  data.title
                                                                   ? true
                                                                   : false
                                                             }
                                                          >
                                                             <ul
-                                                               className={`${
-                                                                  menuClass ===
-                                                                  "mm-collapse"
+                                                               className={`${menuClass ===
+                                                                     "mm-collapse"
                                                                      ? "mm-show"
                                                                      : ""
-                                                               }`}
+                                                                  }`}
                                                             >
                                                                {data.content &&
                                                                   data.content.map(
@@ -186,12 +183,11 @@ const SideBar = () => {
                                                                               }
                                                                            >
                                                                               <Link
-                                                                                 className={`${
-                                                                                    path ===
-                                                                                    data.to
+                                                                                 className={`${path ===
+                                                                                       data.to
                                                                                        ? "mm-active"
                                                                                        : ""
-                                                                                 }`}
+                                                                                    }`}
                                                                                  to={
                                                                                     data.to
                                                                                  }
@@ -228,7 +224,6 @@ const SideBar = () => {
                      );
                   }
                })}
-            </ul>
             {/* <div className="dropdown header-profile2 ">
             <div className="header-info2 text-center">
               <img src={profile} alt="" />
@@ -243,6 +238,8 @@ const SideBar = () => {
               </div>
             </div>
           </div> */}
+            <li> <LogoutPage /></li>
+            </ul>
             <div className="copyright">
                <p className="fs-12 text-center">
                   Made with{" "}
