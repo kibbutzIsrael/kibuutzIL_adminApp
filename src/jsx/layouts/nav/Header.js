@@ -349,7 +349,6 @@ const Header = ({ onNote }) => {
 					</Dropdown.Menu>
 				</Dropdown> 				
             </ul> */}
-            <LogoutPage />
           </div>
         </nav>
       </div>
