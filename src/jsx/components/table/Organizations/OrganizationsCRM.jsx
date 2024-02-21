@@ -1,14 +1,17 @@
 import React, { Fragment, useEffect, useState } from "react";
-import PageTitle from "../../layouts/PageTitle";
+import PageTitle from "../../../layouts/PageTitle";
 import { Row, Col, Card, Table, Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import { useFormik } from "formik";
 
-import { Input } from "../creatdComponents/Input";
-import { createUser, deleteUser, updateUser } from "../../../lib/userCRUD";
-import { YupUserSchema, yupOrganizationSchema } from "../../../lib/YupSchemas";
-import SortingTH from "../creatdComponents/SortingTH";
-import SearchByInput from "../creatdComponents/SeachByInput";
+import { Input } from "../../creatdComponents/Input";
+import { createUser, deleteUser, updateUser } from "../../../../lib/userCRUD";
+import {
+   YupUserSchema,
+   yupOrganizationSchema,
+} from "../../../../lib/YupSchemas";
+import SortingTH from "../../creatdComponents/SortingTH";
+import SearchByInput from "../../creatdComponents/SeachByInput";
 import { useSearchParams } from "react-router-dom";
 import swal from "sweetalert";
 
@@ -44,8 +47,13 @@ const OrganizationsCRM = () => {
    const API_URI = "https://kibbutzil.online/organizations";
 
    async function fetchOrganizations() {
-      const res = await axios.get(API_URI);
-      setOrganizations(res.data);
+      try {
+         const res = await axios.get(API_URI);
+         setOrganizations(res.data);
+      } catch (error) {
+         swal("Error", "Error while fetching data.", "error");
+         console.log(error);
+      }
    }
 
    // async function searchUser(search) {
